@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import useForm from '../hooks/formHooks';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
 
 // class TodoForm extends React.Component {
 
@@ -47,45 +50,38 @@ import React, { useState, useEffect } from 'react';
 // }
 
 function TodoForm(props) {
-  let [item, setItem] = useState({});
+  // let [item, setItem] = useState({});
+  const [item, handleInputChange, handleSubmit] = useForm(props);
 
-  const _handleInputChange =(e)=> {
-    let state = { ...this.state.item, [e.target.name]: e.target.value }
-    setItem(state);
-  };
-
-  const _handleSubmit = (e) => {
-    e.preventDefault();
-    e.target.reset();
-    props._handleSubmit(item);
-    const newItem = {};
-    setItem(newItem);
-}
-
-return (
-  <>
-    <h3>Add Item</h3>
-    <form onSubmit={_handleSubmit}>
-      <label>
-        <span>To Do Item</span>
-        <input
-          name="text"
-          placeholder="Add To Do List Item"
-          onChange={_handleInputChange}
-        />
-      </label>
-      <label>
-        <span>Difficulty Rating</span>
-        <input defaultValue="1" type="range" min="1" max="5" name="difficulty" onChange={_handleInputChange} />
-      </label>
-      <label>
-        <span>Assigned To</span>
-        <input type="text" name="assignee" placeholder="Assigned To" onChange={_handleInputChange} />
-      </label>
-      <button>Add Item</button>
-    </form>
-  </>
-);
+  return (
+    <>
+      <Form onSubmit={handleSubmit}>
+        <Form.Group >
+          <Form.Label><span>To Do Item</span>
+            <input
+              name="item"
+              placeholder="Add To Do List Item"
+              onChange={handleInputChange}
+            />
+          </Form.Label>
+        </Form.Group>
+        <Form.Group >
+          <Form.Label>
+            <span>Assigned To</span>
+            <input type="text" name="assignee" placeholder="Assigned To" onChange={handleInputChange} />
+          </Form.Label>
+        </Form.Group>
+        <Form.Group >
+          <Form.Label><span>Difficulty Rating</span>
+            <input defaultValue="1" type="range" min="1" max="5" name="difficulty" onChange={handleInputChange} />
+          </Form.Label>
+        </Form.Group>
+        <Button variant="primary" type="submit">
+          Add Item
+        </Button>
+      </Form>
+    </>
+  );
 
 }
 export default TodoForm;
