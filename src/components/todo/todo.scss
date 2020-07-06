@@ -4,15 +4,6 @@ body, html {
     padding:0;
     width: 100%;
 }
-
-.container{
-    margin-top: 3%;
-}
-h2{
-    background-color: #353A40;
-    padding: 1%;
-    color: white;
-}
 .todo-details {
     display:flex;
     flex-direction:column;
@@ -22,7 +13,6 @@ h2{
         flex-direction:row;
         justify-content:space-between;
         padding:.5em 1em;
-        // text-align: center;
     }
 
     .item {
@@ -52,12 +42,19 @@ h2{
         }
     }
 
-    .ul {
+    ul {
         list-style-type:none;
         margin:0;
         padding:0;
 
-        .li {
+        li {
+
+            align-items: center;
+            display:flex;
+            flex-direction:row;
+            font-size: .75em;
+            margin: .75em .5em;
+
             &.complete-true {
               span {
                 background: pink;
@@ -79,7 +76,7 @@ h2{
                  border: .5px solid #eee;
                  display:inline-block;
                  padding: .2em .25em;
-                 width: 100%;;
+                 width: 300px;
              }
 
             button {
@@ -94,4 +91,7 @@ h2{
         }
     }
 
+}
+h2{
+    color: whitesmoke;
 }
