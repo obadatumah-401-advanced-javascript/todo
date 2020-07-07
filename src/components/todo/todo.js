@@ -1,31 +1,84 @@
 import React, { useState, useEffect } from 'react';
 import TodoForm from './form.js';
 import TodoList from './list.js';
-import Row from 'react-bootstrap/Row';
-import Container from 'react-bootstrap/Container';
-import Col from 'react-bootstrap/Col';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Navbar from 'react-bootstrap/Navbar';
+import Header from '../header';
 
 import './todo.scss';
 
+function ToDo(props) {
 
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {
+  //     list: [],
+  //   };
+  // }
+  const [list, setList] = useState([]);
 
-function Header(){
+  const addItem = (item) => {
+    // item._id = Math.random();
+    item.complete = false;
+    setList([...list, item]);
+    fetch('https://lab32-401.herokuapp.com/todo', {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(item)
+    })
+      .then(response => response.json())
+      .then(savedItem => {
+        setList([...list, savedItem])
+        console.log('saved----------', savedItem);
+      })
+      .catch(console.error);
+  };
 
-  return (
-      <header>
-           <Navbar bg="primary" variant="light">
-                    <Navbar.Brand >Home</Navbar.Brand>
-                </Navbar>
-      </header>
+  const toggleComplete = id => {
+
+    let item = list.filter(i => i._id === id)[0] || {};
+
+    if (item._id) {
+      item.complete = !item.complete;
+      let list1 = list.map(listItem => listItem._id === item._id ? item : listItem);
+      setList(list1);
+    }
+    let item2 = list.filter(i => i._id === id)[0] || {};
+    console.log('item222',item2);
     
-  );
-}
+    fetch(`https://lab32-401.herokuapp.com/todo/${id}`,{
+      method: 'put',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(item2) 
+    })
+      .then(response => response.json())
+      .then(savedItem => {
+        console.log('saveditemsssssss',savedItem)
+      })
+      .catch(console.error);
 
-function ToDo() {
-  const [todo, setTodo] = useState([]);
+  };
 
+  const deleteFun = id =>{
+    fetch(`https://lab32-401.herokuapp.com/todo/${id}`,{
+      method: 'delete'
+    })
+      .then(response => response.json())
+      .then(savedItem => {
+        // setList(savedItem)
+        let finalResult
+        list.forEach((val,i)=>{
+          if(id === val._id)  {
+            finalResult=list.splice(i,1);
+            console.log('listtttttt',list);
+            
+          }
+        });
+        setList([...list]);
+        console.log('result----------', savedItem);
+      })
+      .catch(console.error);
+      
+
+  };
 
   useEffect(() => {
     let list = [
@@ -35,64 +88,48 @@ function ToDo() {
       { _id: 4, complete: true, text: 'Do Homework', difficulty: 3, assignee: 'Person C' },
       { _id: 5, complete: false, text: 'Take a Nap', difficulty: 1, assignee: 'Person B' },
     ];
-    setTodo(list);
+
+
+    setList(list);
+
+    fetch('https://lab32-401.herokuapp.com/todo')
+      .then(response => response.json())
+      .then(savedItem => {
+        setList(savedItem)
+        console.log('result----------', savedItem);
+      })
+      .catch(console.error);
+
+
   }, []);
-
-  const addItem = (item) => {
-    item._id = Math.random();
-    item.complete = false;
-    setTodo([...todo, item]);
-  };
-
-
-  const toggleComplete = id => {
-
-    let item = todo.filter(i => i._id === id)[0] || {};
-
-    if (item._id) {
-      item.complete = !item.complete;
-      let list = todo.map(listItem => listItem._id === item._id ? item : listItem);
-      setTodo(list);
-    }
-
-  };
 
   return (
     <>
       <header>
         <Header />
+        <h2>
+          There are {list.filter(item => !item.complete).length} Items To Complete
+          </h2>
       </header>
-      <Container>
-        <Row className="justify-content-md-center">
-          <Col><h2>
-            There are {todo.filter(item => !item.complete).length} Items To Complete
-        </h2></Col>
-        </Row>
-        <Row className="todo">
-          <Col>
-            <div>
-              <TodoForm handleSubmit={addItem} />
-            </div></Col>
-          <Col >
-            <div>
-              <TodoList
-                list={todo}
-                handleComplete={toggleComplete}
-              />
-            </div>
-          </Col>
-        </Row>
-      </Container>
+
+      <section className="todo">
+
+        <div>
+          <TodoForm handleSubmit={addItem} />
+        </div>
+
+        <div>
+          <TodoList
+            list={list}
+            handleComplete={toggleComplete}
+            deleteFun={deleteFun}
+          />
+        </div>
+      </section>
     </>
   );
-
-
-
-
-
 }
 
 
-
-
 export default ToDo;
+
