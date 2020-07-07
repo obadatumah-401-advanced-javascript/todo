@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
 import TodoForm from './form.js';
 import TodoList from './list.js';
+
 import Header from '../header';
 
 import './todo.scss';
@@ -80,6 +83,7 @@ function ToDo(props) {
 
   };
 
+
   useEffect(() => {
     let list = [
       { _id: 1, complete: false, text: 'Clean the Kitchen', difficulty: 3, assignee: 'Person A' },
@@ -88,6 +92,7 @@ function ToDo(props) {
       { _id: 4, complete: true, text: 'Do Homework', difficulty: 3, assignee: 'Person C' },
       { _id: 5, complete: false, text: 'Take a Nap', difficulty: 1, assignee: 'Person B' },
     ];
+
 
 
     setList(list);
@@ -101,28 +106,35 @@ function ToDo(props) {
       .catch(console.error);
 
 
+
   }, []);
 
   return (
     <>
       <header>
+
         <Header />
         <h2>
           There are {list.filter(item => !item.complete).length} Items To Complete
           </h2>
+
       </header>
 
       <section className="todo">
 
         <div>
+
           <TodoForm handleSubmit={addItem} />
+
         </div>
 
         <div>
           <TodoList
             list={list}
             handleComplete={toggleComplete}
+
             deleteFun={deleteFun}
+
           />
         </div>
       </section>
@@ -131,5 +143,7 @@ function ToDo(props) {
 }
 
 
+
 export default ToDo;
+
 
