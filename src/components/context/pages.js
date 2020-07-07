@@ -3,11 +3,8 @@
 // export const PageContext = React.createContext();
 
 // function Pages(props) {
-
-//     const [itemPerPage, setItemPerPage] = useState(3);
-//     const [currentPage, setCurrentPage] = useState(1);
-
-    
+//     const [itemPerPage, setItemPerPage] = useState(3); // 3 items in each page 
+//     const [currentPage, setCurrentPage] = useState(1); // start with page one
 //     const indexOfLastItem = currentPage * itemPerPage;
 //     const indexOfFirstItem = indexOfLastItem - itemPerPage;
 //     const list = props.list.sort((a, b) => a.difficulty > b.difficulty ? 1 : -1);
