@@ -1,24 +1,28 @@
+import React from 'react';
 
-import React, { useState, useEffect } from 'react';
 
 function TodoList(props) {
+
+
 
   return (
     <ul>
       {props.list.map(item => (
         <li
-          className={`complete-${item.status}`}
+
+          className={`complete-${item.complete.toString()}`}
           key={item._id}
         >
-          <span onClick={() => props.deleteOnClick(item._id)}>X</span>
           <span onClick={() => props.handleComplete(item._id)}>
-            Assignee: {item.assignee}
-            <span>Task: {item.item}</span>
+            {item.text}
           </span>
+          <button onClick={(event) => props.deleteFun(item._id)}>X</button>
+
         </li>
       ))}
     </ul>
   );
 }
+
 
 export default TodoList;

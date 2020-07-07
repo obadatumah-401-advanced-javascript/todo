@@ -7,7 +7,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import './todo.scss';
 import useAjax from '../hooks/ajax';
 
-const todoAPI = 'https://api-js401.herokuapp.com/api/v1/todo';
+const todoAPI = 'https://lab32-401.herokuapp.com/todo';
 
 
 const ToDo = () => {

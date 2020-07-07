@@ -3,31 +3,86 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import TodoForm from './form.js';
 import TodoList from './list.js';
+
+import Header from '../header';
+
 import './todo.scss';
 
 function ToDo(props) {
+
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {
+  //     list: [],
+  //   };
+  // }
   const [list, setList] = useState([]);
-  const [item, setItem] = useState({});
+
   const addItem = (item) => {
-    item._id = Math.random();
+    // item._id = Math.random();
     item.complete = false;
     setList([...list, item]);
+    fetch('https://lab32-401.herokuapp.com/todo', {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(item)
+    })
+      .then(response => response.json())
+      .then(savedItem => {
+        setList([...list, savedItem])
+        console.log('saved----------', savedItem);
+      })
+      .catch(console.error);
   };
 
   const toggleComplete = id => {
-    const item = list.filter(i => i._id === id)[0] || {};
+
+    let item = list.filter(i => i._id === id)[0] || {};
 
     if (item._id) {
       item.complete = !item.complete;
-      setItem(item);
+      let list1 = list.map(listItem => listItem._id === item._id ? item : listItem);
+      setList(list1);
     }
+    let item2 = list.filter(i => i._id === id)[0] || {};
+    console.log('item222',item2);
+    
+    fetch(`https://lab32-401.herokuapp.com/todo/${id}`,{
+      method: 'put',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(item2) 
+    })
+      .then(response => response.json())
+      .then(savedItem => {
+        console.log('saveditemsssssss',savedItem)
+      })
+      .catch(console.error);
+
   };
 
-  useEffect(() => {
+  const deleteFun = id =>{
+    fetch(`https://lab32-401.herokuapp.com/todo/${id}`,{
+      method: 'delete'
+    })
+      .then(response => response.json())
+      .then(savedItem => {
+        // setList(savedItem)
+        let finalResult
+        list.forEach((val,i)=>{
+          if(id === val._id)  {
+            finalResult=list.splice(i,1);
+            console.log('listtttttt',list);
+            
+          }
+        });
+        setList([...list]);
+        console.log('result----------', savedItem);
+      })
+      .catch(console.error);
+      
 
-    let newList = list.map(listItem => listItem._id === item._id ? item : listItem);
-    setList(newList);
-  }, [item]);
+  };
+
 
   useEffect(() => {
     let list = [
@@ -38,37 +93,48 @@ function ToDo(props) {
       { _id: 5, complete: false, text: 'Take a Nap', difficulty: 1, assignee: 'Person B' },
     ];
 
+
+
     setList(list);
+
+    fetch('https://lab32-401.herokuapp.com/todo')
+      .then(response => response.json())
+      .then(savedItem => {
+        setList(savedItem)
+        console.log('result----------', savedItem);
+      })
+      .catch(console.error);
+
+
+
   }, []);
 
   return (
     <>
       <header>
-        <Navbar bg="primary" variant="dark" expand="lg">
-          <Nav className="mr-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-          </Nav>
-        </Navbar>
-        <Navbar bg="dark" variant="dark" expand="lg">
-          <Nav className="mr-auto">
-            <h2>
-              There are {list.filter(item => !item.complete).length} Items To Complete
-            </h2>
-          </Nav>
-        </Navbar>
+
+        <Header />
+        <h2>
+          There are {list.filter(item => !item.complete).length} Items To Complete
+          </h2>
 
       </header>
 
       <section className="todo">
 
         <div>
-          <TodoForm />
+
+          <TodoForm handleSubmit={addItem} />
+
         </div>
 
         <div>
           <TodoList
             list={list}
             handleComplete={toggleComplete}
+
+            deleteFun={deleteFun}
+
           />
         </div>
       </section>
@@ -76,4 +142,8 @@ function ToDo(props) {
   );
 }
 
+
+
 export default ToDo;
+
+
